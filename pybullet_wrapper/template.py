@@ -21,4 +21,5 @@ from .base import BaseWrapperPyBullet
 
 class TempPyBullet(BaseWrapperPyBullet):
     def my_func(self):
+        """<What does this function do?>"""
         self.connect(self.GUI)

@@ -23,6 +23,7 @@ import numbers
 
 
 def formatfloat(x):
+    """Convert x to a %.3f-format string."""
     ret = "%.3f" % float(x)
     if float(x) >= 0.0:
         return f" {ret}"
@@ -30,6 +31,7 @@ def formatfloat(x):
 
 
 def pformat(dictionary, function):
+    """Recursively print dictionaries and lists with %.3f precision."""
     if isinstance(dictionary, dict):
         return type(dictionary)((key, pformat(value, function)) for key, value in dictionary.items())
     # Warning: bytes and str are two kinds of collections.Container, but we don't want to go inside it, so it should be pick out here.
@@ -44,4 +46,5 @@ def pformat(dictionary, function):
 
 class PrettyFloatPyBullet(BaseWrapperPyBullet):
     def prettyPrint(self, x):
+        """Print any object with %.3f precision and nice format."""
         PrettyPrinter().pprint(pformat(x, formatfloat))

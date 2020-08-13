@@ -2,13 +2,20 @@
 # This is a more complicated demo of using wrappers
 
 import pybullet as p
-from pybullet_wrapper.base import BaseWrapperPyBullet
-from pybullet_wrapper.handy import HandyPyBullet
-from pybullet_wrapper.pretty_float import PrettyFloatPyBullet
+
+# This tricky import brings back the IntelliSense if this repo exists as a subfolder of a workspace.
+if __name__ == "__main__":
+    from pybullet_wrapper.base import BaseWrapperPyBullet
+    from pybullet_wrapper.handy import HandyPyBullet
+    from pybullet_wrapper.pretty_float import PrettyFloatPyBullet
+else:
+    from .pybullet_wrapper.base import BaseWrapperPyBullet
+    from .pybullet_wrapper.handy import HandyPyBullet
+    from .pybullet_wrapper.pretty_float import PrettyFloatPyBullet
 
 p = BaseWrapperPyBullet(p)
-p = HandyPyBullet(p)
 p = PrettyFloatPyBullet(p)
+p = HandyPyBullet(p)
 
 # Note: here we use start() function from `HandyPyBullet`
 p.start()
