@@ -1,6 +1,8 @@
 # PyBulletWrapper
 A convenient, gym-like wrapper for PyBullet
 
+![Auto Complete](misc/screenshot.gif)
+
 # Prerequisites
 You need PyBullet of course. You can install PyBullet via command line:
 
