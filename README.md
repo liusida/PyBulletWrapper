@@ -42,6 +42,7 @@ while True:
 
 # Demos
 `demo2.py` is a more complicated demo that you can take a look. (Tip: you can use `Ctrl+Mouse` to control the camera in the pybullet Window.)
+
 ![Demo2](misc/demo2.png)
 
 # Contribute
