@@ -133,20 +133,7 @@ class HandyPyBullet(BaseWrapperPyBullet):
     # Some original functions, like getKeyboardEvents(), already returns a dictionary, so there's no need to implement handy version.
 
     def getDebugVisualizerCameraPy(self):
-        keys = [
-            "width",
-            "height",
-            "viewMatrix",
-            "projectionMatrix",
-            "cameraUp",
-            "cameraForward",
-            "horizontal",
-            "vertical",
-            "yaw",
-            "pitch",
-            "dist",
-            "target",
-        ]
+        keys = ["width", "height", "viewMatrix", "projectionMatrix", "cameraUp", "cameraForward", "horizontal", "vertical", "yaw", "pitch", "dist", "target", ]
         retArray = self.getDebugVisualizerCamera()
         return self.__parseCommonReturn("getDebugVisualizerCamera", retArray, keys)
 
@@ -157,7 +144,10 @@ class HandyPyBullet(BaseWrapperPyBullet):
         retArray = self.getMouseEvents(**out_parameters)
         return self.__parseListReturns("getMouseEvents", retArray, keys)
 
-    def getBasePositionAndOrientationPy(self, objectUniqueId, physicsClientId=None):
+    def getBasePositionAndOrientationPy(self, bodyUniqueId, physicsClientId=None):
+        # Note: The orientation of an object can be represented as a rotation of an object from its original unrotated orientation, i.e. (0,0,0,1). 
+        # orientation.rotate(relative_position) + translation = global_position
+        # relative_position = orientation.inverse.rorate(global_position - translation)
         keys = ["position", "orientation"]
         valid_parameters = ["bodyUniqueId", "physicsClientId"]
         out_parameters = self.__constructOutParameters(locals(), valid_parameters)
@@ -165,49 +155,21 @@ class HandyPyBullet(BaseWrapperPyBullet):
         return self.__parseCommonReturn("getBasePositionAndOrientation", retArray, keys)
 
     def getJointInfoPy(self, bodyUniqueId, jointIndex, physicsClientId=None):
-        keys = [
-            "jointIndex",
-            "jointName",
-            "jointType",
-            "qIndex",
-            "uIndex",
-            "flags",
-            "jointDamping",
-            "jointFriction",
-            "jointLowerLimit",
-            "jointUpperLimit",
-            "jointMaxForce",
-            "jointMaxVelocity",
-            "linkName",
-            "jointAxis",
-            "parentFramePos",
-            "parentFrameOrn",
-            "parentIndex",
-        ]
+        keys = ["jointIndex", "jointName", "jointType", "qIndex", "uIndex", "flags", "jointDamping", "jointFriction", "jointLowerLimit", "jointUpperLimit", "jointMaxForce", "jointMaxVelocity", "linkName", "jointAxis", "parentFramePos", "parentFrameOrn", "parentIndex", ]
         valid_parameters = ["bodyUniqueId", "jointIndex", "physicsClientId"]
         out_parameters = self.__constructOutParameters(locals(), valid_parameters)
         retArray = self.getJointInfo(**out_parameters)
         return self.__parseCommonReturn("getJointInfo", retArray, keys)
 
     def getJointStatePy(self, bodyUniqueId, jointIndex, physicsClientId=None):
-        keys = [
-            "jointPosition",
-            "jointVelocity",
-            "jointReactionForces",
-            "appliedJointMotorTorque",
-        ]
+        keys = ["jointPosition", "jointVelocity", "jointReactionForces", "appliedJointMotorTorque", ]
         valid_parameters = ["bodyUniqueId", "jointIndex", "physicsClientId"]
         out_parameters = self.__constructOutParameters(locals(), valid_parameters)
         retArray = self.getJointState(**out_parameters)
         return self.__parseCommonReturn("getJointState", retArray, keys)
 
     def getJointStatesPy(self, bodyUniqueId, jointIndices, physicsClientId=None):
-        keys = [
-            "jointPosition",
-            "jointVelocity",
-            "jointReactionForces",
-            "appliedJointMotorTorque",
-        ]
+        keys = ["jointPosition", "jointVelocity", "jointReactionForces", "appliedJointMotorTorque", ]
         valid_parameters = ["bodyUniqueId", "jointIndices", "physicsClientId"]
         out_parameters = self.__constructOutParameters(locals(), valid_parameters)
         retArray = self.getJointStates(**out_parameters)
@@ -216,27 +178,10 @@ class HandyPyBullet(BaseWrapperPyBullet):
     # Note:
     # According to the source code `pybullet.c`, the returned value has 6 items when computeLinkVelocity is 0, but 8 otherwise.
     # This is different from the documentation.
-    def getLinkStatePy(
-        self, bodyUniqueId, linkIndex, computeLinkVelocity=None, computeForwardKinematics=None, physicsClientId=None,
-    ):
-        keys = [
-            "linkWorldPosition",
-            "linkWorldOrientation",
-            "localInertialFramePosition",
-            "localInertialFrameOrientation",
-            "worldLinkFramePosition",
-            "worldLinkFrameOrientation",
-            "worldLinkLinearVelocity",
-            "worldLinkAngularVelocity",
-        ]
+    def getLinkStatePy(self, bodyUniqueId, linkIndex, computeLinkVelocity=None, computeForwardKinematics=None, physicsClientId=None,):
+        keys = ["linkWorldPosition", "linkWorldOrientation", "localInertialFramePosition", "localInertialFrameOrientation", "worldLinkFramePosition", "worldLinkFrameOrientation", "worldLinkLinearVelocity", "worldLinkAngularVelocity", ]
         keys_without_computeLinkVelocity = keys[:6]
-        valid_parameters = [
-            "bodyUniqueId",
-            "linkIndex",
-            "computeLinkVelocity",
-            "computeForwardKinematics",
-            "physicsClientId",
-        ]
+        valid_parameters = ["bodyUniqueId", "linkIndex", "computeLinkVelocity", "computeForwardKinematics", "physicsClientId", ]
         out_parameters = self.__constructOutParameters(locals(), valid_parameters)
         retArray = self.getLinkState(**out_parameters)
 
@@ -244,27 +189,10 @@ class HandyPyBullet(BaseWrapperPyBullet):
             return self.__parseCommonReturn("getLinkState", retArray, keys)
         return self.__parseCommonReturn("getLinkState", retArray, keys_without_computeLinkVelocity)
 
-    def getLinkStatesPy(
-        self, bodyUniqueId, linkIndices, computeLinkVelocity=None, computeForwardKinematics=None, physicsClientId=None,
-    ):
-        keys = [
-            "linkWorldPosition",
-            "linkWorldOrientation",
-            "localInertialFramePosition",
-            "localInertialFrameOrientation",
-            "worldLinkFramePosition",
-            "worldLinkFrameOrientation",
-            "worldLinkLinearVelocity",
-            "worldLinkAngularVelocity",
-        ]
+    def getLinkStatesPy(self, bodyUniqueId, linkIndices, computeLinkVelocity=None, computeForwardKinematics=None, physicsClientId=None,):
+        keys = ["linkWorldPosition", "linkWorldOrientation", "localInertialFramePosition", "localInertialFrameOrientation", "worldLinkFramePosition", "worldLinkFrameOrientation", "worldLinkLinearVelocity", "worldLinkAngularVelocity", ]
         keys_without_computeLinkVelocity = keys[:6]
-        valid_parameters = [
-            "bodyUniqueId",
-            "linkIndices",
-            "computeLinkVelocity",
-            "computeForwardKinematics",
-            "physicsClientId",
-        ]
+        valid_parameters = ["bodyUniqueId", "linkIndices", "computeLinkVelocity", "computeForwardKinematics", "physicsClientId", ]
         out_parameters = self.__constructOutParameters(locals(), valid_parameters)
         retArray = self.getLinkStates(**out_parameters)
 
@@ -273,110 +201,29 @@ class HandyPyBullet(BaseWrapperPyBullet):
         return self.__parseListReturns("getLinkStates", retArray, keys_without_computeLinkVelocity)
 
     def getConstraintInfoPy(self, constraintUniqueId, physicsClientId=None):
-        keys = [
-            "parentBodyUniqueId",
-            "parentJointIndex",
-            "childBodyUniqueId",
-            "childLinkIndex",
-            "constraintType",
-            "jointAxis",
-            "jointPivotInParent",
-            "jointPivotInChild",
-            "jointFrameOrientationParent",
-            "jointFrameOrientationChild",
-            "maxAppliedForce",
-            "gearRatio",
-            "gearAuxLink",
-            "relativePositionTarget",
-            "erp",
-        ]
+        keys = ["parentBodyUniqueId", "parentJointIndex", "childBodyUniqueId", "childLinkIndex", "constraintType", "jointAxis", "jointPivotInParent", "jointPivotInChild", "jointFrameOrientationParent", "jointFrameOrientationChild", "maxAppliedForce", "gearRatio", "gearAuxLink", "relativePositionTarget", "erp", ]
         valid_parameters = ["constraintUniqueId", "physicsClientId"]
         out_parameters = self.__constructOutParameters(locals(), valid_parameters)
         retArray = self.getConstraintInfo(**out_parameters)
         return self.__parseCommonReturn("getConstraintInfo", retArray, keys)
 
     def getDynamicsInfoPy(self, bodyUniqueId, linkIndex, physicsClientId=None):
-        keys = [
-            "mass",
-            "lateralFriction",
-            "localInertiaDiagonal",
-            "localInertialPos",
-            "localInertialOrn",
-            "restitution",
-            "rollingFriction",
-            "spinningFriction",
-            "contactDamping",
-            "contactStiffness",
-            "bodyType",
-            "collisionMargin",
-        ]
+        keys = ["mass", "lateralFriction", "localInertiaDiagonal", "localInertialPos", "localInertialOrn", "restitution", "rollingFriction", "spinningFriction", "contactDamping", "contactStiffness", "bodyType", "collisionMargin", ]
         valid_parameters = ["bodyUniqueId", "linkIndex", "physicsClientId"]
         out_parameters = self.__constructOutParameters(locals(), valid_parameters)
         retArray = self.getDynamicsInfo(**out_parameters)
         return self.__parseCommonReturn("getDynamicsInfo", retArray, keys)
 
-    def getCameraImagePy(
-        self,
-        width,
-        height,
-        viewMatrix=None,
-        projectionMatrix=None,
-        lightDirection=None,
-        lightColor=None,
-        lightDistance=None,
-        shadow=None,
-        lightAmbientCoeff=None,
-        lightDiffuseCoeff=None,
-        lightSpecularCoeff=None,
-        renderer=None,
-        flags=None,
-        physicsClientId=None,
-    ):
+    def getCameraImagePy(self, width, height, viewMatrix=None, projectionMatrix=None, lightDirection=None, lightColor=None, lightDistance=None, shadow=None, lightAmbientCoeff=None, lightDiffuseCoeff=None, lightSpecularCoeff=None, renderer=None, flags=None, physicsClientId=None,):
         keys = ["width", "height", "rgbPixels", "depthPixels", "segmentationMaskBuffer"]
-        valid_parameters = [
-            "width",
-            "height",
-            "viewMatrix",
-            "projectionMatrix",
-            "lightDirection",
-            "lightColor",
-            "lightDistance",
-            "shadow",
-            "lightAmbientCoeff",
-            "lightDiffuseCoeff",
-            "lightSpecularCoeff",
-            "renderer",
-            "flags",
-            "projectiveTextureView",
-            "projectiveTextureProj",
-            "physicsClientId",
-        ]
+        valid_parameters = ["width", "height", "viewMatrix", "projectionMatrix", "lightDirection", "lightColor", "lightDistance", "shadow", "lightAmbientCoeff", "lightDiffuseCoeff", "lightSpecularCoeff", "renderer", "flags", "projectiveTextureView", "projectiveTextureProj", "physicsClientId", ]
         out_parameters = self.__constructOutParameters(locals(), valid_parameters)
         retArray = self.getCameraImage(**out_parameters)
         return self.__parseCommonReturn("getDynamicsInfo", retArray, keys)
 
     def getVisualShapeDataPy(self, objectUniqueId, flags=None, physicsClientId=None):
-        keys = [
-            "objectUniqueId",
-            "linkIndex",
-            "visualGeometryType",
-            "dimensions",
-            "meshAssetFileName",
-            "localVisualFramePosition",
-            "localVisualFrameOrientation",
-            "rgbaColor",
-            "textureUniqueId",
-        ]
-        keys_without_VISUAL_SHAPE_DATA_TEXTURE_UNIQUE_IDS = [
-            "objectUniqueId",
-            "linkIndex",
-            "visualGeometryType",
-            "dimensions",
-            "meshAssetFileName",
-            "localVisualFramePosition",
-            "localVisualFrameOrientation",
-            "rgbaColor",
-        ]
+        keys = ["objectUniqueId", "linkIndex", "visualGeometryType", "dimensions", "meshAssetFileName", "localVisualFramePosition", "localVisualFrameOrientation", "rgbaColor", "textureUniqueId", ]
+        keys_without_VISUAL_SHAPE_DATA_TEXTURE_UNIQUE_IDS = ["objectUniqueId", "linkIndex", "visualGeometryType", "dimensions", "meshAssetFileName", "localVisualFramePosition", "localVisualFrameOrientation", "rgbaColor", ]
         valid_parameters = ["objectUniqueId", "flags", "physicsClientId"]
         out_parameters = self.__constructOutParameters(locals(), valid_parameters)
         retArray = self.getVisualShapeData(**out_parameters)
@@ -384,200 +231,74 @@ class HandyPyBullet(BaseWrapperPyBullet):
             return self.__parseListReturns("getVisualShapeData", retArray, keys)
         return self.__parseListReturns("getVisualShapeData", retArray, keys_without_VISUAL_SHAPE_DATA_TEXTURE_UNIQUE_IDS,)
 
-    def getContactPointsPy(
-        self, bodyA=None, bodyB=None, linkIndexA=None, linkIndexB=None, physicsClientId=None,
-    ):
-        keys = [
-            "contactFlag",
-            "bodyUniqueIdA",
-            "bodyUniqueIdB",
-            "linkIndexA",
-            "linkIndexB",
-            "positionOnA",
-            "positionOnB",
-            "contactNormalOnB",
-            "contactDistance",
-            "normalForce",
-            "lateralFriction1",
-            "lateralFrictionDir1",
-            "lateralFriction2",
-            "lateralFrictionDir2",
-        ]
-        valid_parameters = [
-            "bodyA",
-            "bodyB",
-            "linkIndexA",
-            "linkIndexB",
-            "physicsClientId",
-        ]
-        valid_parameters = [
-            "bodyA",
-            "bodyB",
-            "linkIndexA",
-            "linkIndexB",
-            "physicsClientId",
-        ]
+    def getContactPointsPy(self, bodyA=None, bodyB=None, linkIndexA=None, linkIndexB=None, physicsClientId=None,):
+        # Note: positionOnA and positionOnB are in global Cartesian coordinates.
+        keys = ["contactFlag", "bodyUniqueIdA", "bodyUniqueIdB", "linkIndexA", "linkIndexB", "positionOnA", "positionOnB", "contactNormalOnB", "contactDistance", "normalForce", "lateralFriction1", "lateralFrictionDir1", "lateralFriction2", "lateralFrictionDir2", ]
+        valid_parameters = ["bodyA", "bodyB", "linkIndexA", "linkIndexB", "physicsClientId", ]
+        valid_parameters = ["bodyA", "bodyB", "linkIndexA", "linkIndexB", "physicsClientId", ]
         out_parameters = self.__constructOutParameters(locals(), valid_parameters)
         retArray = self.getContactPoints(**out_parameters)
         return self.__parseListReturns("getContactPoints", retArray, keys)
 
-    def getClosestPointsPy(
-        self, bodyA, bodyB, distance, linkIndexA=None, linkIndexB=None, physicsClientId=None,
-    ):
-        keys = [
-            "contactFlag",
-            "bodyUniqueIdA",
-            "bodyUniqueIdB",
-            "linkIndexA",
-            "linkIndexB",
-            "positionOnA",
-            "positionOnB",
-            "contactNormalOnB",
-            "contactDistance",
-            "normalForce",
-            "lateralFriction1",
-            "lateralFrictionDir1",
-            "lateralFriction2",
-            "lateralFrictionDir2",
-        ]
+    def getClosestPointsPy(self, bodyA, bodyB, distance, linkIndexA=None, linkIndexB=None, physicsClientId=None,):
+        keys = ["contactFlag", "bodyUniqueIdA", "bodyUniqueIdB", "linkIndexA", "linkIndexB", "positionOnA", "positionOnB", "contactNormalOnB", "contactDistance", "normalForce", "lateralFriction1", "lateralFrictionDir1", "lateralFriction2", "lateralFrictionDir2", ]
         # Note: There are four -1's because according to pybullet.c, there are four unused parameters:
         # collisionShapePositionAObj, collisionShapePositionBObj, collisionShapeOrientationA, and collisionShapeOrientationBObj.
-        valid_parameters = [
-            "bodyA",
-            "bodyB",
-            "distance",
-            "linkIndexA",
-            "linkIndexB",
-            "collisionShapeA",
-            "collisionShapeB",
-            "collisionShapePositionA",
-            "collisionShapePositionB",
-            "collisionShapeOrientationA",
-            "collisionShapeOrientationB",
-            "physicsClientId",
-        ]
+        valid_parameters = ["bodyA", "bodyB", "distance", "linkIndexA", "linkIndexB", "collisionShapeA", "collisionShapeB", "collisionShapePositionA", "collisionShapePositionB", "collisionShapeOrientationA", "collisionShapeOrientationB", "physicsClientId", ]
         out_parameters = self.__constructOutParameters(locals(), valid_parameters)
         retArray = self.getClosestPoints(**out_parameters)
         return self.__parseListReturns("getClosestPoints", retArray, keys)
 
     def getCollisionShapeDataPy(self, objectUniqueId, linkIndex=None, physicsClientId=None):
-        keys = [
-            "objectUniqueId",
-            "linkIndex",
-            "geometryType",
-            "dimensions",
-            "filename",
-            "localFramePos",
-            "localFrameOrn",
-        ]
+        keys = ["objectUniqueId", "linkIndex", "geometryType", "dimensions", "filename", "localFramePos", "localFrameOrn", ]
         valid_parameters = ["objectUniqueId", "linkIndex", "physicsClientId"]
         out_parameters = self.__constructOutParameters(locals(), valid_parameters)
         retArray = self.getCollisionShapeData(**out_parameters)
         return self.__parseListReturns("getCollisionShapeData", retArray, keys)
 
     # Simple proxy functions just for IntelliSense
-    def createMultiBodyPy(
-        self,
-        baseMass=None,
-        baseCollisionShapeIndex=None,
-        baseVisualShapeIndex=None,
-        basePosition=None,
-        baseOrientation=None,
-        baseInertialFramePosition=None,
-        baseInertialFrameOrientation=None,
-        linkMasses=None,
-        linkCollisionShapeIndices=None,
-        linkVisualShapeIndices=None,
-        linkPositions=None,
-        linkOrientations=None,
-        linkInertialFramePositions=None,
-        linkInertialFrameOrientations=None,
-        linkParentIndices=None,
-        linkJointTypes=None,
-        linkJointAxis=None,
-        useMaximalCoordinates=None,
-        flags=None,
-        batchPositions=None,
-        physicsClientId=None,
-    ):
-        valid_parameters = [
-            "baseMass",
-            "baseCollisionShapeIndex",
-            "baseVisualShapeIndex",
-            "basePosition",
-            "baseOrientation",
-            "baseInertialFramePosition",
-            "baseInertialFrameOrientation",
-            "linkMasses",
-            "linkCollisionShapeIndices",
-            "linkVisualShapeIndices",
-            "linkPositions",
-            "linkOrientations",
-            "linkInertialFramePositions",
-            "linkInertialFrameOrientations",
-            "linkParentIndices",
-            "linkJointTypes",
-            "linkJointAxis",
-            "useMaximalCoordinates",
-            "flags",
-            "batchPositions",
-            "physicsClientId",
-        ]
+    def createMultiBodyPy(self, baseMass=None, baseCollisionShapeIndex=None, baseVisualShapeIndex=None, basePosition=None, baseOrientation=None, baseInertialFramePosition=None, baseInertialFrameOrientation=None, linkMasses=None, linkCollisionShapeIndices=None, linkVisualShapeIndices=None, linkPositions=None, linkOrientations=None, linkInertialFramePositions=None,
+                          linkInertialFrameOrientations=None, linkParentIndices=None, linkJointTypes=None, linkJointAxis=None, useMaximalCoordinates=None, flags=None, batchPositions=None, physicsClientId=None,):
+        valid_parameters = ["baseMass", "baseCollisionShapeIndex", "baseVisualShapeIndex", "basePosition", "baseOrientation", "baseInertialFramePosition", "baseInertialFrameOrientation", "linkMasses", "linkCollisionShapeIndices", "linkVisualShapeIndices",
+                            "linkPositions", "linkOrientations", "linkInertialFramePositions", "linkInertialFrameOrientations", "linkParentIndices", "linkJointTypes", "linkJointAxis", "useMaximalCoordinates", "flags", "batchPositions", "physicsClientId", ]
         out_parameters = self.__constructOutParameters(locals(), valid_parameters)
         return self.createMultiBody(**out_parameters)
 
-    def changeDynamicsPy(
-        self,
-        bodyUniqueId,
-        linkIndex,
-        mass=None,
-        lateralFriction=None,
-        spinningFriction=None,
-        rollingFriction=None,
-        restitution=None,
-        linearDamping=None,
-        angularDamping=None,
-        contactStiffness=None,
-        contactDamping=None,
-        frictionAnchor=None,
-        localInertiaDiagonal=None,
-        ccdSweptSphereRadius=None,
-        contactProcessingThreshold=None,
-        activationState=None,
-        jointDamping=None,
-        anisotropicFriction=None,
-        maxJointVelocity=None,
-        collisionMargin=None,
-        jointLowerLimit=None,
-        jointUpperLimit=None,
-        jointLimitForce=None,
-        physicsClientId=None,
-    ):
-        valid_parameters = [
-            "bodyUniqueId",
-            "linkIndex",
-            "mass",
-            "lateralFriction",
-            "spinningFriction",
-            "rollingFriction",
-            "restitution",
-            "linearDamping",
-            "angularDamping",
-            "contactStiffness",
-            "contactDamping",
-            "frictionAnchor",
-            "localInertiaDiagonal",
-            "ccdSweptSphereRadius",
-            "contactProcessingThreshold",
-            "activationState",
-            "jointDamping",
-            "anisotropicFriction",
-            "maxJointVelocity",
-            "collisionMargin",
-            "jointLowerLimit",
-            "jointUpperLimit",
-            "jointLimitForce",
-            "physicsClientId",
-        ]
+    def changeDynamicsPy(self, bodyUniqueId, linkIndex, mass=None, lateralFriction=None, spinningFriction=None, rollingFriction=None, restitution=None, linearDamping=None, angularDamping=None, contactStiffness=None, contactDamping=None, frictionAnchor=None, localInertiaDiagonal=None, ccdSweptSphereRadius=None, contactProcessingThreshold=None, activationState=None, jointDamping=None,
+                         anisotropicFriction=None, maxJointVelocity=None, collisionMargin=None, jointLowerLimit=None, jointUpperLimit=None, jointLimitForce=None, physicsClientId=None,):
+        valid_parameters = ["bodyUniqueId", "linkIndex", "mass", "lateralFriction", "spinningFriction", "rollingFriction", "restitution", "linearDamping", "angularDamping", "contactStiffness", "contactDamping", "frictionAnchor", "localInertiaDiagonal",
+                            "ccdSweptSphereRadius", "contactProcessingThreshold", "activationState", "jointDamping", "anisotropicFriction", "maxJointVelocity", "collisionMargin", "jointLowerLimit", "jointUpperLimit", "jointLimitForce", "physicsClientId", ]
         out_parameters = self.__constructOutParameters(locals(), valid_parameters)
         return self.changeDynamics(**out_parameters)
+
+    def createCollisionShapePy(self, shapeType=None, radius=None, halfExtents=None, height=None, fileName=None, meshScale=None, planeNormal=None, flags=None, collisionFramePosition=None, collisionFrameOrientation=None, vertices=None, indices=None, heightfieldTextureScaling=None, heightfieldData=None, numHeightfieldRows=None, numHeightfieldColumns=None, replaceHeightfieldIndex=None, physicsClientId=None):
+        # Note: passing in `indices` will implicitly cause bullet to use flags=p.GEOM_FORCE_CONCAVE_TRIMESH
+        valid_parameters = ["shapeType", "radius", "halfExtents", "height", "fileName", "meshScale", "planeNormal", "flags", "collisionFramePosition", "collisionFrameOrientation", "vertices", "indices", "heightfieldTextureScaling", "heightfieldData", "numHeightfieldRows", "numHeightfieldColumns", "replaceHeightfieldIndex", "physicsClientId"]
+        out_parameters = self.__constructOutParameters(locals(), valid_parameters)
+        return self.createCollisionShape(**out_parameters)
+
+    def createVisualShapePy(self, shapeType=None, radius=None, halfExtents=None, length=None, fileName=None, meshScale=None, planeNormal=None, flags=None, rgbaColor=None, specularColor=None, visualFramePosition=None, visualFrameOrientation=None, vertices=None, indices=None, normals=None, uvs=None, physicsClientId=None):
+        valid_parameters = ["shapeType", "radius", "halfExtents", "length", "fileName", "meshScale", "planeNormal", "flags", "rgbaColor", "specularColor", "visualFramePosition", "visualFrameOrientation", "vertices", "indices", "normals", "uvs", "physicsClientId"]
+        out_parameters = self.__constructOutParameters(locals(), valid_parameters)
+        return self.createVisualShape(**out_parameters)
+
+    def createConstraintPy(self, parentBodyUniqueId, parentLinkIndex, childBodyUniqueId, childLinkIndex, jointType, jointAxis, parentFramePosition, childFramePosition, parentFrameOrientation=None, childFrameOrientation=None, physicsClientId=None):
+        valid_parameters = ["parentBodyUniqueId", "parentLinkIndex", "childBodyUniqueId", "childLinkIndex", "jointType", "jointAxis", "parentFramePosition", "childFramePosition", "parentFrameOrientation", "childFrameOrientation", "physicsClientId"]
+        out_parameters = self.__constructOutParameters(locals(), valid_parameters)
+        return self.createConstraint(**out_parameters)
+
+    def addUserDebugLinePy(self, lineFromXYZ, lineToXYZ, lineColorRGB=None, lineWidth=None, lifeTime=None, parentObjectUniqueId=None, parentLinkIndex=None, replaceItemUniqueId=None, physicsClientId=None):
+        valid_parameters = ["lineFromXYZ", "lineToXYZ", "lineColorRGB", "lineWidth", "lifeTime", "parentObjectUniqueId", "parentLinkIndex", "replaceItemUniqueId", "physicsClientId"]
+        out_parameters = self.__constructOutParameters(locals(), valid_parameters)
+        return self.addUserDebugLine(**out_parameters)
+
+    def getKeyboardEventsPy(self, physicsClientId=None):
+        """return a dictionary {key_value: state_value}"""
+        valid_parameters = ["physicsClientId"]
+        out_parameters = self.__constructOutParameters(locals(), valid_parameters)
+        return self.getKeyboardEvents(**out_parameters)
+
+    def changeConstraintPy(self, userConstraintUniqueId, jointChildPivot=None, jointChildFrameOrientation=None, maxForce=None, gearRatio=None, gearAuxLink=None, relativePositionTarget=None, erp=None, physicsClientId=None):
+        valid_parameters = ["userConstraintUniqueId", "jointChildPivot", "jointChildFrameOrientation", "maxForce", "gearRatio", "gearAuxLink", "relativePositionTarget", "erp", "physicsClientId"]
+        out_parameters = self.__constructOutParameters(locals(), valid_parameters)
+        return self.changeConstraint(**out_parameters)
