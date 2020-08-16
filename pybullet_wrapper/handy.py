@@ -85,7 +85,7 @@ class HandyPyBullet(BaseWrapperPyBullet):
             self.setAdditionalSearchPath(pybullet_data.getDataPath())
             if withFloor:
                 planeId = self.loadURDF("plane.urdf")
-                self.changeDynamicsPy(bodyUniqueId=planeId, linkIndex=-1, restitution=0.3)
+                self.changeDynamicsPy(bodyUniqueId=planeId, linkIndex=-1, restitution=0.9)
 
         if withGravity:
             self.setGravity(0,0,-9.8)
