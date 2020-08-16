@@ -18,8 +18,7 @@
 
 from .base import BaseWrapperPyBullet
 
-import time
-import inspect
+import time, tempfile
 import pybullet_data
 
 COLOR_RED = "\033[0;31m"
@@ -73,7 +72,7 @@ class HandyPyBullet(BaseWrapperPyBullet):
 
     # Public:
     # New handy additional inteface (by combining the functionalities in the original inteface)
-    def start(self, withGUI=True, withPanels=False, withData=True):
+    def start(self, withGUI=True, withPanels=False, withData=True, withGravity=True, withFloor=True):
         """Start the simulation."""
         if withGUI:
             self.connect(self.GUI)
@@ -84,6 +83,15 @@ class HandyPyBullet(BaseWrapperPyBullet):
 
         if withData:
             self.setAdditionalSearchPath(pybullet_data.getDataPath())
+            if withFloor:
+                planeId = self.loadURDF("plane.urdf")
+                self.changeDynamicsPy(bodyUniqueId=planeId, linkIndex=-1, restitution=0.3)
+
+        if withGravity:
+            self.setGravity(0,0,-9.8)
+
+        if withFloor:
+            return planeId
 
     def sleep(self, n=0.03):
         """time.sleep(n)"""
@@ -302,3 +310,29 @@ class HandyPyBullet(BaseWrapperPyBullet):
         valid_parameters = ["userConstraintUniqueId", "jointChildPivot", "jointChildFrameOrientation", "maxForce", "gearRatio", "gearAuxLink", "relativePositionTarget", "erp", "physicsClientId"]
         out_parameters = self.__constructOutParameters(locals(), valid_parameters)
         return self.changeConstraint(**out_parameters)
+
+    def setJointMotorControl2Py(self, bodyUniqueId, jointIndex, controlMode, targetPosition=None, targetVelocity=None, force=None, positionGain=None, velocityGain=None, maxVelocity=None, physicsClientId=None):
+        valid_parameters = ["bodyUniqueId", "jointIndex", "controlMode", "targetPosition", "targetVelocity", "force", "positionGain", "velocityGain", "maxVelocity", "physicsClientId"]
+        out_parameters = self.__constructOutParameters(locals(), valid_parameters)
+        return self.setJointMotorControl2(**out_parameters)
+
+    def getNumJointsPy(self, bodyUniqueId, physicsClientId=None):
+        valid_parameters = ["bodyUniqueId", "physicsClientId"]
+        out_parameters = self.__constructOutParameters(locals(), valid_parameters)
+        return self.getNumJoints(**out_parameters)
+
+    def loadURDFPy(self, fileName, basePosition=None, baseOrientation=None, useMaximalCoordinates=None, useFixedBase=None, flags=None, globalScaling=None, physicsClientId=None):
+        valid_parameters = ["fileName", "basePosition", "baseOrientation", "useMaximalCoordinates", "useFixedBase", "flags", "globalScaling", "physicsClientId"]
+        out_parameters = self.__constructOutParameters(locals(), valid_parameters)
+        return self.loadURDF(**out_parameters)
+
+    def loadXacroPy(self, fileName, basePosition=None, baseOrientation=None, useMaximalCoordinates=None, useFixedBase=None, flags=None, globalScaling=None, physicsClientId=None):
+        valid_parameters = ["fileName", "basePosition", "baseOrientation", "useMaximalCoordinates", "useFixedBase", "flags", "globalScaling", "physicsClientId"]
+        from .xacro_wrapper import xacroWrapper as x # import xacro support as needed
+        urdf = x.xacro_to_urdf(fileName) # read .xacro file
+        f = tempfile.NamedTemporaryFile(mode="w", suffix=".urdf", delete=False)
+        print(urdf, file=f) # write .urdf file into a tempfile
+        fileName = f.name # get the filename for loadURDF
+        f.close()
+        out_parameters = self.__constructOutParameters(locals(), valid_parameters)
+        return self.loadURDF(**out_parameters)
