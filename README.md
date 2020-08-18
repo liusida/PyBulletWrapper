@@ -51,3 +51,6 @@ while True:
 You are very welcome to make your wrapper and pull request.
 
 Please take a look at the files in the `pybullet_wrapper` folder and use `template.py` as a template to create your wrapper.
+
+# Note
+Similar functionality has been done in `pybullet.gym.pybullet_utils.bullet_client.py`.

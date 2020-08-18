@@ -8,15 +8,27 @@
 # If you don't have ROS installed, please first install a version of xacro from here: https://github.com/ros-gbp/xacro-release/releases
 #
 from xacro import *
+from pathlib import Path
 
 def xacro_to_urdf(input_file_name):
     """
     Read a .xacro file, return the content of corresponding .urdf.
     This function is modified from `main()` in xacro package.
     """
+    search_paths = [".", "data"]
+    input_file = None
+    for path in search_paths:
+        f = Path(path) / Path(input_file_name)
+        if f.is_file():
+            input_file = f
+            break
+    if input_file is None:
+        error(f"No such file {input_file_name} in search paths {search_paths}.")
+        sys.exit(2)
+
     try:
-        # open and process file
-        doc = process_file(input_file_name)
+        # open and process file    
+        doc = process_file(f.as_posix())
 
     # error handling
     except xml.parsers.expat.ExpatError as e:
